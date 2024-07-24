@@ -1,6 +1,7 @@
 
 const express = require("express");
 const mongoose = require("mongoose")
+const multer  = require('multer')
 const cors = require('cors')
 const cookieParser = require("cookie-parser")
 
@@ -10,7 +11,15 @@ const apiRouter = require("./routes/api_routes");
 
 
 
-
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "./uploads")
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${Date.now()}-${file.originalname}`)
+    }
+})
+const upload = multer({ storage:storage })
 const app = express()
 
 mongoose.connect('mongodb://localhost:27017/myDatabase')
@@ -26,6 +35,13 @@ app.use(bodyParser.urlencoded({extended:true}))
 
 
 app.use("/api", apiRouter)
+app.post("/upload", upload.single("profileImage"), (req, res) => {
+
+    console.log(req.body)
+    console.log(req.file)
+    res.send({message: "Image Upload Successfully"})
+
+})
 
 
 
