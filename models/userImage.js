@@ -6,7 +6,7 @@ const {Schema} = mongoose;
 const UserImageSchema = new Schema({
     username: {
         type: String,
-        // required: true,
+        required: true,
     }, 
     image: {
         type: String,

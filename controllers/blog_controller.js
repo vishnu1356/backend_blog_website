@@ -1,4 +1,6 @@
 const Blog = require("../models/blog");
+const UploadBlog = require("../models/uploadblog");
+const path = require("path")
 
 
 exports.createBlog = async (req, res)=> {
@@ -19,7 +21,7 @@ exports.createBlog = async (req, res)=> {
 
 exports.getAllBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find()
+        const blogs = await UploadBlog.find()
         if(!blogs){
             res.status(404).json("Not Found")
         }
@@ -31,14 +33,17 @@ exports.getAllBlogs = async (req, res) => {
 
 exports.getSingleBlog = async (req, res) => {
     if(!req.params.id){
-        res.status(404).json("Id Not Found!")
+        res.status(404).json("Id Not Found!");
     }
     try {
-        const blog = await Blog.findById(req.params.id)
+        const blog = await UploadBlog.findById(req.params.id)
+        console.log("what is blog:", blog)
         if(!blog) {
             res.status(404).json("Blog Not Found")
         }
-        res.status(200).json(blog)
+        const imagePath = path.join(__dirname, "../public/" + blog.blogimg)
+        // res.status(200).json(blog)
+        res.sendFile(imagePath)
     } catch (error) {
         res.status(500).json({error: "Something Went Wrong!"})
     }
@@ -49,7 +54,7 @@ exports.deleteSingleBlog = async (req, res) => {
         res.status(404).json("Id Not Found")
     }
     try {
-        const blog = await Blog.findByIdAndDelete(req.params.id)
+        const blog = await UploadBlog.findByIdAndDelete(req.params.id)
         if(!blog){
             res.status(404).json("Blog Not Found")
         }
